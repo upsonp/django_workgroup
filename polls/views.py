@@ -32,4 +32,4 @@ def vote(request, question_id):
 
 
 class PollsList(ListView):
-    pass
+    model = models.Question
