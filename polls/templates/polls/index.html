@@ -1,0 +1,11 @@
+{% extends 'polls/base_polls.html' %}
+
+{% block title %}Polls{% endblock %}
+
+{% block content %}
+<h1> Questions </h1>
+<ul>
+    <li><a href="{% url 'polls:question_list' %}" >Questions List</a></li>
+    <li><a href="{% url 'polls:question_create' %}" >Create New Question</a></li>
+</ul>
+{% endblock %}
