@@ -1,0 +1,64 @@
+{% extends "polls/base_polls.html" %}
+
+{% block title %}Create Question{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="post" />
+</form>
+
+{% if object %}
+<table>
+<thead><tr><th>Choice</th><th>Votes</th></tr><th></th></thead>
+<tbody>
+    <tr><td><input id="choice" type="text" /></td><td><button class="addChoice">Add Question</button></td><td></td></tr>
+{% for choice in choices %}
+    <tr><td>{{ choice.choice_text }}</td><td>{{ choice.votes }}</td><td><button class="rmChoice" id="rm_{{ choice.id }}">X</button></td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $("button.addChoice").click(function() {
+        var choice = $("#choice").val();
+
+        $.ajax({
+            url: '{% url 'polls:add_choice' %}',
+            data: {
+                'qid': {{object.id}},
+                'choice_text': choice
+            },
+            dataType: 'json',
+            success: function(data) {
+                $("#choice").val("");
+                location.reload();
+            }
+        });
+    });
+
+    $("button.rmChoice").click(function() {
+        var idx = this.id.indexOf("_");
+        var id = this.id.substring(idx+1);
+
+        $.ajax({
+            url: '{% url 'polls:remove_choice' %}',
+            data: {
+                'cid': id
+            },
+            dataType: 'json',
+            success: function(data) {
+                location.reload();
+            }
+        });
+
+    });
+});
+</script>
+{% endblock %}

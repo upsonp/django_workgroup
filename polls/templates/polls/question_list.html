@@ -1,8 +1,19 @@
-<h1>Poll Questions</h1>
-<ul>
-{% for question in object_list %}
-    <li>{{ question.pub_date }} - {{ question.question_text }}</li>
-{% empty %}
-    <li>No poll questions yet.</li>
+{% extends "polls/base_polls.html" %}
+
+{% block title %}Question List{% endblock %}
+
+{% block content %}
+
+<button><a href="{% url 'polls:question_create' %}">New Question</a></button>
+<table>
+    <thead>
+    <tr><th>ID</th><th>Question</th><th>Publiction Date</th></tr>
+    </thead>
+    <tbody>
+{% for object in object_list %}
+<tr><td><a href="{% url 'polls:question_update' object.id %}" >{{ object.id }}</a></td><td>{{ object.question_text }}</td><td>{{ object.pub_date }}</td></tr>
 {% endfor %}
-</ul>
+    </tbody>
+</table>
+
+{% endblock %}

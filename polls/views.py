@@ -1,35 +1,65 @@
+<<<<<<< HEAD
 from django.http import HttpResponse
 from django.views.generic import ListView
+=======
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.http import JsonResponse
+>>>>>>> bb8578f2125789cb74aeba0d6f40b3096b933124
 
-from polls import models
+from datetime import datetime
 
-
-def index(request):
-    return HttpResponse("Hello World!")
-
-
-def detail(request, question_id):
-    return HttpResponse("You're looking at question %s." % question_id)
-
-
-def results(request, question_id):
-    que = models.Question.objects.get(pk=question_id)
-    res = models.Choice.objects.filter(question=question_id)
-
-    response = "You're looking at the results of question %s.<br><br>"
-
-    response = response + str(que) + "<br>"
-    response = response + "<table style=\"border-style: solid; border-color: red;\"><tr><th>CHOICE</th><th>VOTES</th></tr>"
-    for r in res:
-        response = response + "<tr><td>" +str(r.choice_text) + "</td><td>" + str(r.votes) + "</td></tr>"
-
-    response = response + "</table>"
-    return HttpResponse(response % question_id)
+from . import models
 
 
-def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)
+def add_choice(request):
+    qid = request.GET.get('qid')
+    choice_text = request.GET.get('choice_text')
+
+    question = models.Question.objects.get(pk=qid)
+
+    choice = models.Choice(question=question, choice_text=choice_text, votes=0)
+    choice.save()
+
+    return JsonResponse({})
 
 
-class PollsList(ListView):
+def remove_choice(request):
+    cid = request.GET.get('cid')
+
+    choice = models.Choice.objects.get(pk=cid)
+    choice.delete()
+
+    return JsonResponse({})
+
+
+class IndexView(TemplateView):
+    template_name = "polls/index.html"
+
+
+class QuestionsList(ListView):
     model = models.Question
+
+
+class QuestionCreate(CreateView):
+    model = models.Question
+    fields = ["pub_date", "question_text"]
+    success_url = reverse_lazy("polls:question_list")
+
+    def get_initial(self):
+        return {
+            'pub_date': datetime.now()
+        }
+
+
+class QuestionUpdate(UpdateView):
+    model = models.Question
+    fields = ["pub_date", "question_text"]
+    success_url = reverse_lazy("polls:question_list")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["choices"] = models.Choice.objects.filter(question=self.object)
+
+        return context
