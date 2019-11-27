@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-from django.http import HttpResponse
-from django.views.generic import ListView
-=======
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.http import JsonResponse
->>>>>>> bb8578f2125789cb74aeba0d6f40b3096b933124
 
 from datetime import datetime
 
