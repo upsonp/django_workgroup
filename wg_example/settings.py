@@ -76,6 +76,14 @@ WSGI_APPLICATION = 'wg_example.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'localhost',
+        'NAME': 'wg_schema',
+        'USER': 'wg_user',
+        'PASSWORD': os.environ['DJANGO_WG_PASSWORD'],
+        'PORT': '3306'
+    },
+    'old': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
